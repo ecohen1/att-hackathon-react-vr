@@ -62,7 +62,7 @@ export default class WelcomeToVR extends React.Component {
   componentDidMount() {
     var self = this
 
-    var delay = 5000
+    var delay = 4000
 
     Animated.timing(
       self.state.slideValue,
@@ -72,9 +72,10 @@ export default class WelcomeToVR extends React.Component {
       }
     ).start()
 
-    var encodeURI = window.encodeURI('http://localhost:3030/ad-names')
+    var encodeURI = window.encodeURI('http://localhost:3000/videolinks')
     axios.get(encodeURI).then(function (response) {
-      self.setState({urls:response.data})
+      self.setState({urls:response.data.map((url) => url.replace('.en.vtt','.mp4'))})
+      console.log(self.state.urls)
       setTimeout(() => {
         setTimeout(() => {
           self.showAds()
@@ -97,6 +98,7 @@ export default class WelcomeToVR extends React.Component {
   hideAdsForContent = () => {
     this.hideBar()
     this.setState({adIndex: this.state.adIndex+1})
+    this.setState({entered: null})
     if (this.state.adIndex < this.state.adTimes.length) {
       setTimeout(() => {
         this.showAds()
@@ -165,7 +167,7 @@ export default class WelcomeToVR extends React.Component {
   }
 
   render() {
-    var adsToDisplay = this.state.urls.slice(0,this.state.urls.length)
+    var adsToDisplay = this.state.urls.slice(4*this.state.adIndex,4*(this.state.adIndex+1))
     var firstAds = adsToDisplay.slice(0,adsToDisplay.length/2)
     var secondAds = adsToDisplay.slice(adsToDisplay.length/2,adsToDisplay.length)
 
